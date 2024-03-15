@@ -8,7 +8,7 @@
       num_two = int.Parse(System.Console.ReadLine());
     }
 
-    private static void SumBinary(ref int i, ref int []sum, int num_one, int num_two) {
+    private static void SumBinary(ref int i, int []sum, int num_one, int num_two) {
       int carry = 0;
       while (num_one != 0 || num_two != 0) {
         sum[i++] = (num_one % 10 + num_two % 10 + carry) % 2;
@@ -35,7 +35,7 @@
 
       ReadNumbers(out int num_one, out int num_two);
 
-      SumBinary(ref i, ref sum, num_one, num_two);
+      SumBinary(ref i, sum, num_one, num_two);
 
       PrintResult(sum, i);
     }
