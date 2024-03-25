@@ -1,12 +1,6 @@
-﻿namespace Lab1 {
-  public class Lab1 {
+﻿namespace Lab2 {
+  public class Lab2 {
     const int LEN = 9;
-    private static void ReadNumbers(out int num_one, out int num_two) {
-      System.Console.WriteLine("Input 1:");
-      num_one = int.Parse(System.Console.ReadLine());
-      System.Console.WriteLine("Input 2:");
-      num_two = int.Parse(System.Console.ReadLine());
-    }
 
     private static void SumBinary(ref int i, ref int []sum, int num_one, int num_two) {
       int carry = 0;
@@ -31,13 +25,20 @@
 
     public static void Main() {
       int[] sum = new int[LEN + 1];
-      int num_one, num_two, i = 0;
-
-      ReadNumbers(out num_one, out num_two);
-
-      SumBinary(ref i, ref sum, num_one, num_two);
-
-      PrintResult(sum, i);
+      string num_bin;
+      double result = 0.0;
+      
+      System.Console.Write("\nДробове число в 2-й сч: ");
+      num_bin = System.Console.ReadLine();
+      for (int i = 1; i <= num_bin.Length; i++) 
+        result += num_bin[i-1] == '1' ? System.Math.Pow(2, -i) : 0;
+      
+      System.Console.Write($"Result: {result}");
+      // System.Console.Write("\nПрямий код: ");
+      // num_bin = ReadNum();
+      // for (int i = 0; i < LEN; i++) {
+      //   num_bin[i] = int.Parse(input[i]); 
+      // }
     }
   }
 }
