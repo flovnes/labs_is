@@ -3,23 +3,18 @@
     const int LEN = 8;
     const int RESULT_LEN = LEN * 2;
 
-    // private static void SumBinary(int[] sum, int[] num_two) {
-    //   int carry = 0, i = RESULT_LEN;
-    //   for (; i --> LEN ;) {
-    //     int s = sum[i] + num_two[i-LEN] + carry;
-    //     carry = s / 2;
-    //     sum[i] = s % 2;
-    //   }
-    //   for (; i > 0 ; i--) {
-    //     int s = sum[i] + carry;
-    //     carry = s / 2;
-    //     sum[i] = s % 2;
-    //   }
-    //   if (carry == 1) sum[0] = 1;
-    // }
-
     private static void SumBinary(int[] result, int[] num_two) {
       int carry = 0, i = RESULT_LEN;
+      //for (; i --> LEN ;) {
+      //  int s = sum[i] + num_two[i-LEN] + carry;
+      //  carry = s / 2;
+      //  sum[i] = s % 2;
+      //}
+      //for (; i > 0 ; i--) {
+      //  int s = sum[i] + carry;
+      //  carry = s / 2;
+      //  sum[i] = s % 2;
+      //}
       for (; i --> 0 ;) {
         int sum = result[i] + (i >= LEN ? num_two[i - LEN] : 0) + carry;
         carry = sum / 2;
