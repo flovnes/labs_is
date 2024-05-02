@@ -6,6 +6,16 @@ namespace Lab2 {
         bin_to_frac();
         signed_to_supplement();
     }
+    static void bin_to_frac() {
+      double result = 0.0;
+      Console.Write("Число: ");
+      char[] num_binary = Console.ReadLine().ToCharArray();
+
+      for (int i = 1; i <= num_binary.Length; i++)
+        result += num_binary[i - 1] == '1' ? Math.Pow(2, -i) : 0;
+
+      Console.Write($"Результат: {result}");
+    }
     static void signed_to_supplement() {
       Console.Write("\nПрямий код: ");
       char[] num_binary = Console.ReadLine().ToCharArray();
@@ -20,15 +30,6 @@ namespace Lab2 {
       Console.Write(new string(num_binary));
     }
 
-    static void bin_to_frac() {
-      double result = 0.0;
-      Console.Write("Число (бінарне): ");
-      char[] num_binary = Console.ReadLine().ToCharArray();
 
-      for (int i = 1; i <= num_binary.Length; i++)
-        result += num_binary[i - 1] == '1' ? Math.Pow(2, -i) : 0;
-
-      Console.Write($"Дріб (десятковий): {result}");
-    }
   }
 }
