@@ -1,20 +1,17 @@
-﻿namespace lab4 {
+﻿using System.Text;
+namespace lab4 {
   public static partial class Program {
     private static readonly char[] separator = [' ', '*', '^'];
 
-    static void Main()
-    {
-      // Console.Write("Enter a floating-point fraction (e.g., -0.101 * 2^101): ");
-      // string input = Console.ReadLine();
+    static void Main() {
+      Console.OutputEncoding = UTF8Encoding.UTF8; 
+      Console.Write("\n1. Введіть дріб з плаваючою крапкою (наприклад, -0.101 * 2^101):  ");
+      string input = Console.ReadLine();
+      ParseInput(input, out string a_mnt_sign, out string a_ord_sign);
 
-      string input1 = "0.01000000000 *  2 ^100";
-      string input2 = "0.01000000000*2^100";
-
-      Console.WriteLine($"A = {input1}");
-      Console.WriteLine($"B = {input2}");
-
-      ParseInput(input1, out string a_mnt_sign, out string a_ord_sign);
-      ParseInput(input2, out string b_mnt_sign, out string b_ord_sign);
+      Console.Write("\n2. Введіть дріб з плаваючою крапкою (наприклад, -0.101 * 2^101):  ");
+      input = Console.ReadLine();
+      ParseInput(input, out string b_mnt_sign, out string b_ord_sign);
 
       Console.WriteLine($"\nA мантиса (двійкова): {a_mnt_sign} = {bitToSign(a_mnt_sign)}{doubleDecimalSigned(a_mnt_sign)}");
       Console.WriteLine($"A період (двійкова): {a_ord_sign} = {bitToSign(a_ord_sign)}{intDecimalSigned(a_ord_sign)}");
@@ -24,8 +21,8 @@
       Console.WriteLine($"\nA = {a_mnt_sign}{a_ord_sign}\nB = {b_mnt_sign}{b_ord_sign}");
       
       string ngtv_b_ord = InvertSign(b_ord_sign);
-      string a_ord_supp = toSupplement(a_ord_sign.ToCharArray(), true);
-      string ngtv_b_ord_supp = toSupplement(ngtv_b_ord.ToCharArray(), true);
+      string a_ord_supp = intToSupp(a_ord_sign);
+      string ngtv_b_ord_supp = intToSupp(ngtv_b_ord);
 
       Console.WriteLine($"\nA період (додатковий код): {a_ord_supp} = {intDecimalSupp(a_ord_supp)}");
       Console.WriteLine($"від'ємний B період (прямий код): {ngtv_b_ord}");
@@ -51,10 +48,10 @@
       Console.WriteLine($"B мантиса (прямий код): {b_mnt_sign} = {bitToSign(b_mnt_sign)}{doubleDecimalSigned(b_mnt_sign)}");
       
       string ngtv_b_mnt_sign = InvertSign(b_mnt_sign);
-      string a_mnt_supp = toSupplement(a_mnt_sign.ToCharArray(), false);
-      string ngtv_b_mnt_supp = toSupplement(ngtv_b_mnt_sign.ToCharArray(), false);
+      string a_mnt_supp = floatToSupp(a_mnt_sign);
+      string ngtv_b_mnt_supp = floatToSupp(ngtv_b_mnt_sign);
       
-      Console.WriteLine($"\nA - B = A_sup + (-B)_sup:\nA мантиса (додатковий код): {a_mnt_supp} = {doubleDecimalSupp(a_mnt_supp)}");
+      Console.WriteLine($"\nA - B = A_дод + (-B)_дод:\nA мантиса (додатковий код): {a_mnt_supp} = {doubleDecimalSupp(a_mnt_supp)}");
       Console.WriteLine($"від'ємна B мантиса (прямий код): {ngtv_b_mnt_sign} = {(ngtv_b_mnt_sign[0] == '1' ? "-" : "")}{doubleDecimalSigned(ngtv_b_mnt_sign)}");
       Console.WriteLine($"від'ємна B мантиса (додатковий код): {ngtv_b_mnt_supp}  = {doubleDecimalSupp(ngtv_b_mnt_supp)}");
 
@@ -62,7 +59,7 @@
 
       Console.WriteLine($"\nA_n + (-B_n) = {res} (додатковий код)");
 
-      res = toSigned(res.ToCharArray());
+      res = toSigned(res);
 
       Console.WriteLine($"\nA - B = {res[0]}|{res[1..]} {ord_sign[0]}|{ord_sign[1..]} (прямий код) = {doubleDecimalSupp(res)}");
       Console.WriteLine($"\nC = {res}{a_ord_sign}");
@@ -71,7 +68,7 @@
           leadingZeros++;
 
       int exponent = intDecimalSigned(ord_sign) - leadingZeros;
-      string adjustedExponent = toSupplement(intToBinary(exponent).ToCharArray(), true);
+      string adjustedExponent = intToSupp(intToBinary(exponent));
 
       string trimmedMantissa = res[..1] + res[(1 + leadingZeros)..];
 

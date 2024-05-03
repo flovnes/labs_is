@@ -72,59 +72,51 @@ namespace lab4 {
       dec -= bin[0] == '1' ? Math.Pow(2, -1) : 0;
       return dec;
     }
-    
-    // // cringe
-    // static string toSupplement(char[] num_bin) {
-    //   string result = new string(num_bin);
-    //   if (num_bin[0] == '1') {
-    //     for (int i = num_bin.Length - 1; i > 0; i--)  
-    //       num_bin[i] = num_bin[i] == '1' ? '0' : '1';
-          
-    //     string buff = "";
-    //     for (int i = 0; i < num_bin.Length-1; i++)
-    //         buff += '0';
-    //       result = Addition(new string(num_bin), buff + '1');
-    //   }
-    //   return result;
-    // }
-    
-    // ok sorry maybe this is worse
-    static string toSupplement(char[] num_bin, bool integer) {
-      if (num_bin[0] == '0') {
-        if (!integer) {
-          for (int j = 0; j < num_bin.Length - 1; j++)
-            num_bin[j] = num_bin[j+1]; 
-          num_bin[^1] = '0';
-        }
-        return new(num_bin);
-      }
-      int i = num_bin.Length - 1;
-      if (integer) {
-        while (i > 0)
-          if (num_bin[i--] == '1') break;
-        while (i > 0)  
-          num_bin[i] = num_bin[i--] == '1' ? '0' : '1';
-      } else {
-        while (i >= 0)
-          if (num_bin[i--] == '1') break;
-        while (i >= 0) 
-          num_bin[i] = num_bin[i--] == '1' ? '0' : '1'; 
-          
-        for (int j = 0; j < num_bin.Length - 1; j++)
-          num_bin[j] = num_bin[j+1]; 
-        num_bin[^1] = '0';
-      }
-      return new(num_bin);
+
+    static string intToSupp(string num_bin) {
+      if (num_bin[0] == '0') return num_bin;
+      char[] bin = num_bin.ToCharArray();
+      int i = bin.Length - 1;
+      while (i > 0)
+        if (bin[i--] == '1')
+          break;
+      while (i > 0)
+        bin[i] = bin[i--] == '1' ? '0' : '1';
+
+      return new string(bin);
     }
 
-    static string toSigned(char[] num_binary) {
-      if (num_binary[0] == '1') {
-        int i = num_binary.Length-1;
-        while(i >= 0 && num_binary[i--] != '1')
-        for (; i-- > 0 ;)  
-          num_binary[i] = num_binary[i] == '1' ? '0' : '1';
+    static string floatToSupp(string num_bin) {
+      char[] bin = num_bin.ToCharArray();
+      if (bin[0] == '0') {
+        for (int j = 0; j < bin.Length - 1; j++)
+            bin[j] = bin[j + 1];
+        bin[^1] = '0';
+        return new string(bin);
       }
-      return new string(num_binary);
+      
+      int i = bin.Length - 1;
+      while (i >= 0)
+        if (bin[i--] == '1')
+          break;
+      while (i >= 0)
+        bin[i] = bin[i--] == '1' ? '0' : '1';
+      for (int j = 0; j < bin.Length - 1; j++)
+        bin[j] = bin[j + 1];
+      bin[^1] = '0';
+
+      return new string(bin);
+    }
+
+    static string toSigned(string num_bin) {
+      char[] bin = num_bin.ToCharArray();
+      if (bin[0] == '1') {
+        int i = bin.Length-1;
+        while(i >= 0 && bin[i--] != '1')
+        for (; i-- > 0 ;)  
+          bin[i] = bin[i] == '1' ? '0' : '1';
+      }
+      return new string(bin);
     }
 
     static string InvertSign(string bin) {
@@ -135,30 +127,25 @@ namespace lab4 {
       return bin[0] == '1' ? "-" : "";
     }
 
-    // <3 claude
-    static string intToBinary(int value)
-    {
-        if (value == 0)
-            return "0";
+    static string intToBinary(int value) {
+      if (value == 0) return "0";
 
-        bool isNegative = value < 0;
-        value = Math.Abs(value);
+      StringBuilder binary = new();
+      bool isNegative = value < 0;
 
-        StringBuilder binary = new StringBuilder();
+      value = Math.Abs(value);
 
-        while (value > 0)
-        {
-            binary.Insert(0, value % 2);
-            value /= 2;
-        }
+      while (value > 0) {
+        binary.Insert(0, value % 2);
+        value /= 2;
+      }
 
-        if (isNegative)
-        {
-            binary.Insert(0, '1');
-            return toSupplement(binary.ToString().ToCharArray(), true);
-        }
+      if (isNegative) {
+        binary.Insert(0, '1');
+        return floatToSupp(binary.ToString());
+      }
 
-        return binary.ToString();
+      return binary.ToString();
     }
   }
 }
