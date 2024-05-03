@@ -1,142 +1,82 @@
-﻿#pragma warning disable IDE1006 // Naming Styles
+﻿namespace lab4 {
+  public static partial class Program {
+    private static readonly char[] separator = [' ', '*', '^'];
 
-using System.Reflection.Emit;
-using System.Xml.XPath;
+    static void Main()
+    {
+      // Console.Write("Enter a floating-point fraction (e.g., -0.101 * 2^101): ");
+      // string input = Console.ReadLine();
 
-namespace lab4 {
-	public class lab4 {
-		const int LEN = 16;
-		private static readonly char[] separator = [' ', '*', '^'];
+      string input1 = "0.01000000000 *  2 ^100";
+      string input2 = "0.01000000000*2^100";
 
-		static void Main() {
-			string input;
-			// Console.Write("Enter a floating-point fraction (e.g., -0.101 * 2^101): ");
-			// string input = Console.ReadLine();
-			
-			input = "-0.10101000000 * 2^101";
-			parse_input(input, out string a_n, out string a_m);
-			input = "0.11001000000 * 2^011";
-			parse_input(input, out string b_n, out string b_m);
+      Console.WriteLine($"A = {input1}");
+      Console.WriteLine($"B = {input2}");
 
-			string negative_b_m = (b_m[0] == '0') ? '1' + b_m[1..] : '0' + b_m[1..];
-			string a_m_supp = signed_to_supplement(a_m.ToCharArray());
-			string b_m_supp = signed_to_supplement(negative_b_m.ToCharArray());
-			
-			// ma + (-mb)
-			string z = signed_addition(a_m_supp, b_m_supp);
-			Console.WriteLine($"a_m + (-b_m): {z}");
-			
-			int difference = 0;
-			// parse supp
-			for (int i = z.Length - 2; i > 0; i--)
-				difference += z[1..][i] == '1' ? (int)Math.Pow(2, i) : 0;
-			difference -= z[0] == '1' ? (int)Math.Pow(2, z.Length-1) : 0;
-				
-			difference = Math.Abs(difference);
-				
-			// debug
-			Console.WriteLine($"difference: |{a_m} - {b_m}| = {difference}");
-			
-			if (difference != 0) {
-				if (z[0] == '0') {
-					// a_m > b_m
-					b_n = b_n[0] + shift_right(b_n[1..], difference);
-					a_m = b_m;
-				} else {
-					// a_m < b_m
-					a_n = a_n[0] + shift_right(a_n[1..], difference);
-					b_m = a_m;
-				}
-			}
-			
-			// debug
-			Console.WriteLine($"a_n: {a_n}");
-			Console.WriteLine($"b_n: {b_n}");
-			Console.WriteLine($"a_m: {a_m}");
-			Console.WriteLine($"b_m: {b_m}");
+      ParseInput(input1, out string a_mnt_sign, out string a_ord_sign);
+      ParseInput(input2, out string b_mnt_sign, out string b_ord_sign);
 
-			string a_n_supp = signed_to_supplement(a_m.ToCharArray());
-			string b_n_supp = signed_to_supplement(a_n.ToCharArray());
-			string res = signed_addition(a_n, b_n);
-			Console.WriteLine($"result: {res} (decimal): {double_dec(res)}");
-		}
+      Console.WriteLine($"\nA мантиса (двійкова): {a_mnt_sign} = {bitToSign(a_mnt_sign)}{doubleDecimalSigned(a_mnt_sign)}");
+      Console.WriteLine($"A період (двійкова): {a_ord_sign} = {bitToSign(a_ord_sign)}{intDecimalSigned(a_ord_sign)}");
+      Console.WriteLine($"B мантиса (двійкова): {b_mnt_sign} = {bitToSign(b_mnt_sign)}{doubleDecimalSigned(b_mnt_sign)}");
+      Console.WriteLine($"B період (двійкова): {b_ord_sign} = {bitToSign(b_ord_sign)}{intDecimalSigned(b_ord_sign)}");
 
-		private static string shift_right(string n, int orderValue) {
-			string result = "";
-			for (int i = 0; i < orderValue; i++)
-				result += '0';
-			return result + n[..^orderValue];
-		}
+      Console.WriteLine($"\nA = {a_mnt_sign}{a_ord_sign}\nB = {b_mnt_sign}{b_ord_sign}");
+      
+      string ngtv_b_ord = InvertSign(b_ord_sign);
+      string a_ord_supp = toSupplement(a_ord_sign.ToCharArray(), true);
+      string ngtv_b_ord_supp = toSupplement(ngtv_b_ord.ToCharArray(), true);
 
-		private static string signed_addition(string a, string b) {
-			string result = "";
-			int carry = 0;
-			for (int i = a.Length - 1; i >= 0; i--) {
-				int sum = (a[i] - '0') + (b[i] - '0') + carry;
-				result = (sum % 2) + result;
-				carry = sum / 2;
-			}
-			
-			// числа у додатковому коді -> не враховуємо переповнення
-			return result;
-		}
+      Console.WriteLine($"\nA період (додатковий код): {a_ord_supp} = {intDecimalSupp(a_ord_supp)}");
+      Console.WriteLine($"від'ємний B період (прямий код): {ngtv_b_ord}");
+      Console.WriteLine($"від'ємний B період (додатковий код): {ngtv_b_ord_supp} = {intDecimalSupp(ngtv_b_ord_supp)}");
 
-		private static void parse_input(string input, out string mantissa, out string order)
-        {
-            string[] parts = input.Split(separator, StringSplitOptions.RemoveEmptyEntries);
+      string ord_diff_supp = Addition(a_ord_supp, ngtv_b_ord_supp);
+      int ord_diff_dec = Math.Abs(intDecimalSupp(ord_diff_supp));
 
-            string part1 = parts[0];
-            string sign_symbol = "";
-            if (part1[0] == '-')
-            {
-                sign_symbol = "-";
-                mantissa = '1' + parts[0][3..];
-            }
-            else
-            {
-                mantissa = '0' + parts[0][2..];
-            }
+      Console.WriteLine($"\nРізниця періодів: |{a_ord_sign} - {b_ord_sign}| = |{a_ord_supp} + {ngtv_b_ord_supp}| = {ord_diff_supp} ({ord_diff_dec})");
 
-            string part2 = parts[2];
-            string order_sign_symbol = "";
-            if (part2[0] == '-')
-            {
-                order_sign_symbol = "-";
-                order = '1' + parts[2][1..];
-            }
-            else
-            {
-                order = '0' + parts[2];
-            }
-
-            double mantissaValue = double_dec(mantissa);
-
-            int orderValue = 0, len = order.Length - 1;
-            for (int i = 1; i <= len; i++)
-                orderValue += order[i] == '1' ? (int)Math.Pow(2, len - i) : 0;
-
-            // debug
-            Console.WriteLine($"Mantissa (binary): {mantissa} (decimal): {sign_symbol}{mantissaValue}");
-            Console.WriteLine($"Order (binary): {order} (decimal): {order_sign_symbol}{orderValue}");
+      string ord_sign = a_ord_sign;
+      if (ord_diff_dec != 0) {
+        if (ord_diff_supp[0] == '0') {
+          b_mnt_sign = b_mnt_sign[0] + ShiftRight(b_mnt_sign[1..], ord_diff_dec);
+          ord_sign = b_ord_sign;
+        } else {
+          a_mnt_sign = a_mnt_sign[0] + ShiftRight(a_mnt_sign[1..], ord_diff_dec);
+          ord_sign = a_ord_sign;
         }
+      }
 
-        private static double double_dec(string mantissa)
-        {
-            double mantissaValue = 0.0;
-            for (int i = mantissa.Length - 1; i > 0; i--)
-                mantissaValue += mantissa[i] == '1' ? Math.Pow(2, -i) : 0.0;
-            return mantissaValue;
-        }
+      Console.WriteLine($"\nЗсунуті значення:\nA мантиса (прямий код): {a_mnt_sign} = {bitToSign(a_mnt_sign)}{doubleDecimalSigned(a_mnt_sign)}");
+      Console.WriteLine($"B мантиса (прямий код): {b_mnt_sign} = {bitToSign(b_mnt_sign)}{doubleDecimalSigned(b_mnt_sign)}");
+      
+      string ngtv_b_mnt_sign = InvertSign(b_mnt_sign);
+      string a_mnt_supp = toSupplement(a_mnt_sign.ToCharArray(), false);
+      string ngtv_b_mnt_supp = toSupplement(ngtv_b_mnt_sign.ToCharArray(), false);
+      
+      Console.WriteLine($"\nA - B = A_sup + (-B)_sup:\nA мантиса (додатковий код): {a_mnt_supp} = {doubleDecimalSupp(a_mnt_supp)}");
+      Console.WriteLine($"від'ємна B мантиса (прямий код): {ngtv_b_mnt_sign} = {(ngtv_b_mnt_sign[0] == '1' ? "-" : "")}{doubleDecimalSigned(ngtv_b_mnt_sign)}");
+      Console.WriteLine($"від'ємна B мантиса (додатковий код): {ngtv_b_mnt_supp}  = {doubleDecimalSupp(ngtv_b_mnt_supp)}");
 
-        static string signed_to_supplement(char[] num_binary) {
-			if (num_binary[0] == '1') {
-				int i = num_binary.Length - 1;
-				while (i > 1) { i -= 1; if (num_binary[i] == '0') break; } 
-				for (;i > 0; i -= 1) num_binary[i] = num_binary[i] == '1' ? '0' : '1';
-			}
-			return new string(num_binary);
-		}
-	}
+      string res = Addition(a_mnt_supp, ngtv_b_mnt_supp);
+
+      Console.WriteLine($"\nA_n + (-B_n) = {res} (додатковий код)");
+
+      res = toSigned(res.ToCharArray());
+
+      Console.WriteLine($"\nA - B = {res[0]}|{res[1..]} {ord_sign[0]}|{ord_sign[1..]} (прямий код) = {doubleDecimalSupp(res)}");
+      Console.WriteLine($"\nC = {res}{a_ord_sign}");
+      int leadingZeros = 0;
+      for (int i = 1; i < res.Length - 1 && res[i] == '0'; i++)
+          leadingZeros++;
+
+      int exponent = intDecimalSigned(ord_sign) - leadingZeros;
+      string adjustedExponent = toSupplement(intToBinary(exponent).ToCharArray(), true);
+
+      string trimmedMantissa = res[..1] + res[(1 + leadingZeros)..];
+
+      Console.WriteLine($"\nC = {trimmedMantissa[0]}|{trimmedMantissa[1..]} {adjustedExponent[0]}|{adjustedExponent[1..]} (прямий код) = {doubleDecimalSupp(trimmedMantissa)}");
+      Console.WriteLine($"\nC = {trimmedMantissa}{adjustedExponent}");
+    }
+  }
 }
-
-#pragma warning restore IDE1006 // Naming Styles
