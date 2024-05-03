@@ -1,7 +1,7 @@
 using System.Text;
-namespace lab4 {
-  public static partial class Program {
-    private static void ParseInput(string i, out string m_str, out string o_str) {
+namespace lab4_x {
+  public static partial class Lab4 {
+    public static void ParseInput(string i, out string m_str, out string o_str) {
       string[] parts = i.Split(separator, StringSplitOptions.RemoveEmptyEntries);
 
       string part1 = parts[0];
@@ -18,14 +18,14 @@ namespace lab4 {
         o_str = '0' + parts[2];
     }
 
-    private static string ShiftRight(string n, int order) {
+    public static string ShiftRight(string n, int order) {
       string result = "";
       for (int i = 0; i < order; i++)
       result += '0';
       return result + n[..^order];
     }
 
-    private static string Addition(string a, string b) {
+    public static string Addition(string a, string b) {
       int len = Math.Min(a.Length-1, b.Length-1);
       string result = "";
       int carry = 0;
@@ -41,21 +41,21 @@ namespace lab4 {
       return result;
     }
 
-    private static int intDecimalSigned(string bin) {
+    public static int intDecimalSigned(string bin) {
       int dec = 0, len = bin.Length - 1;
       for (int i = 1; i <= len; i++)
         dec += bin[i] == '1' ? (int)Math.Pow(2, len - i) : 0;
       return dec;
     }
 
-    private static double doubleDecimalSigned(string bin) {
+    public static double doubleDecimalSigned(string bin) {
       double dec = 0.0;
       for (int i = 1; i < bin.Length; i++) 
         dec += bin[i] == '1' ?  Math.Pow(2, -i) : 0; 
       return dec;
     }
 
-    private static int intDecimalSupp(string bin) {
+    public static int intDecimalSupp(string bin) {
       int len = bin.Length - 1;
       int dec = 0;
         for (int i = 1; i <= len; i++) 
@@ -64,7 +64,7 @@ namespace lab4 {
       return dec;
     }
 
-    private static double doubleDecimalSupp(string bin) {
+    public static double doubleDecimalSupp(string bin) {
       int len = bin.Length - 1;
       double dec = 0;
       for (int i = 1; i <= len; i++) 
@@ -73,7 +73,7 @@ namespace lab4 {
       return dec;
     }
 
-    static string intToSupp(string num_bin) {
+    public static string intToSupp(string num_bin) {
       if (num_bin[0] == '0') return num_bin;
       char[] bin = num_bin.ToCharArray();
       int i = bin.Length - 1;
@@ -86,7 +86,7 @@ namespace lab4 {
       return new string(bin);
     }
 
-    static string floatToSupp(string num_bin) {
+    public static string floatToSupp(string num_bin) {
       char[] bin = num_bin.ToCharArray();
       if (bin[0] == '0') {
         for (int j = 0; j < bin.Length - 1; j++)
@@ -108,7 +108,7 @@ namespace lab4 {
       return new string(bin);
     }
 
-    static string toSigned(string num_bin) {
+    public static string toSigned(string num_bin) {
       char[] bin = num_bin.ToCharArray();
       if (bin[0] == '1') {
         int i = bin.Length-1;
@@ -119,15 +119,15 @@ namespace lab4 {
       return new string(bin);
     }
 
-    static string InvertSign(string bin) {
+    public static string InvertSign(string bin) {
       return (bin[0] == '0') ? '1' + bin[1..] : '0' + bin[1..];
     }
 
-    static string bitToSign(string bin) {
+    public static string bitToSign(string bin) {
       return bin[0] == '1' ? "-" : "";
     }
 
-    static string intToBinary(int value) {
+    public static string intToBinary(int value) {
       if (value == 0) return "0";
 
       StringBuilder binary = new();

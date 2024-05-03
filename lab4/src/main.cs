@@ -1,6 +1,6 @@
-﻿using System.Text;
-namespace lab4 {
-  public static partial class Program {
+using System.Text;
+namespace lab4_x {
+  public static partial class Lab4 {
     private static readonly char[] separator = [' ', '*', '^'];
 
     static void Main() {
