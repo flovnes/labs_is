@@ -33,9 +33,9 @@ namespace tests
         [Fact]
         public void TestAddition()
         {
-            string a = "01010101";
-            string b = "10001000";
-            string expected = "11011101";
+            string a = "110110001";
+            string b = "1011101010";
+            string expected = "100100110";
 
             string actual = Lab4.Addition(a, b);
 
