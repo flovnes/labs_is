@@ -7,12 +7,9 @@ namespace lab4 {
       Console.OutputEncoding = UTF8Encoding.UTF8; 
       string input = Console.ReadLine();
       ParseInput(input, out string a_mnt_sign, out string a_ord_sign);
-
       input = Console.ReadLine();
       ParseInput(input, out string b_mnt_sign, out string b_ord_sign);
 
-      Console.WriteLine($"\nA = {a_mnt_sign}{a_ord_sign}\nB = {b_mnt_sign}{b_ord_sign}");
-      
       string ngtv_b_ord = InvertSign(b_ord_sign);
       string a_ord_supp = intToSupp(a_ord_sign);
       string ngtv_b_ord_supp = intToSupp(ngtv_b_ord);
@@ -34,8 +31,7 @@ namespace lab4 {
       string ngtv_b_mnt_sign = InvertSign(b_mnt_sign);
       string a_mnt_supp = floatToSupp(a_mnt_sign);
       string ngtv_b_mnt_supp = floatToSupp(ngtv_b_mnt_sign);
-      
-      string res = Addition(a_mnt_supp, ngtv_b_mnt_supp);
+      string res = toSigned(Addition(a_mnt_supp, ngtv_b_mnt_supp));
 
       int leadingZeros = 0;
       for (int i = 1; i < res.Length - 1 && res[i] == '0'; i++)

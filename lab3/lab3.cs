@@ -13,7 +13,6 @@ namespace Lab3 {
       if (carry == 1) result[0] = 1;
     }
 
-
     private static void ProductBinary(int[] result, int[] num_one, int[] num_two) {
       for (int i = 0; i < LEN; i++) {
         for (int j = 0; j < RESULT_LEN - 1; j++) 
