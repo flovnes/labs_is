@@ -1,4 +1,4 @@
-using lab4_x;
+using lab4;
 using Xunit;
 
 namespace tests
