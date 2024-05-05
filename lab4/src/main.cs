@@ -3,15 +3,24 @@ namespace lab4_x {
   public static partial class Lab4 {
     private static readonly char[] separator = [' ', '*', '^'];
 
-    static void Main() {
-      Console.OutputEncoding = UTF8Encoding.UTF8; 
+    static void Main()
+    {
+      Console.OutputEncoding = UTF8Encoding.UTF8;
       Console.Write("\n1. Введіть дріб з плаваючою крапкою (наприклад, -0.101 * 2^101):  ");
-      string input = Console.ReadLine();
-      ParseInput(input, out string a_mnt_sign, out string a_ord_sign);
-
+      string input1 = Console.ReadLine();
       Console.Write("\n2. Введіть дріб з плаваючою крапкою (наприклад, -0.101 * 2^101):  ");
-      input = Console.ReadLine();
-      ParseInput(input, out string b_mnt_sign, out string b_ord_sign);
+      string input2 = Console.ReadLine();
+
+      string c = shutup(input1, input2);
+
+      Console.WriteLine(c);
+    }
+
+    public static string shutup(string input1, string input2)
+    {
+      string adjustedExponent, trimmedMantissa;
+      ParseInput(input1, out string a_mnt_sign, out string a_ord_sign);
+      ParseInput(input2, out string b_mnt_sign, out string b_ord_sign);
 
       Console.WriteLine($"\nA мантиса (двійкова): {a_mnt_sign} = {bitToSign(a_mnt_sign)}{doubleDecimalSigned(a_mnt_sign)}");
       Console.WriteLine($"A період (двійкова): {a_ord_sign} = {bitToSign(a_ord_sign)}{intDecimalSigned(a_ord_sign)}");
@@ -19,7 +28,7 @@ namespace lab4_x {
       Console.WriteLine($"B період (двійкова): {b_ord_sign} = {bitToSign(b_ord_sign)}{intDecimalSigned(b_ord_sign)}");
 
       Console.WriteLine($"\nA = {a_mnt_sign}{a_ord_sign}\nB = {b_mnt_sign}{b_ord_sign}");
-      
+
       string ngtv_b_ord = InvertSign(b_ord_sign);
       string a_ord_supp = intToSupp(a_ord_sign);
       string ngtv_b_ord_supp = intToSupp(ngtv_b_ord);
@@ -34,11 +43,15 @@ namespace lab4_x {
       Console.WriteLine($"\nРізниця періодів: |{a_ord_sign} - {b_ord_sign}| = |{a_ord_supp} + {ngtv_b_ord_supp}| = {ord_diff_supp} ({ord_diff_dec})");
 
       string ord_sign = a_ord_sign;
-      if (ord_diff_dec != 0) {
-        if (ord_diff_supp[0] == '0') {
+      if (ord_diff_dec != 0)
+      {
+        if (ord_diff_supp[0] == '0')
+        {
           b_mnt_sign = b_mnt_sign[0] + ShiftRight(b_mnt_sign[1..], ord_diff_dec);
           ord_sign = b_ord_sign;
-        } else {
+        }
+        else
+        {
           a_mnt_sign = a_mnt_sign[0] + ShiftRight(a_mnt_sign[1..], ord_diff_dec);
           ord_sign = a_ord_sign;
         }
@@ -46,11 +59,11 @@ namespace lab4_x {
 
       Console.WriteLine($"\nЗсунуті значення:\nA мантиса (прямий код): {a_mnt_sign} = {bitToSign(a_mnt_sign)}{doubleDecimalSigned(a_mnt_sign)}");
       Console.WriteLine($"B мантиса (прямий код): {b_mnt_sign} = {bitToSign(b_mnt_sign)}{doubleDecimalSigned(b_mnt_sign)}");
-      
+
       string ngtv_b_mnt_sign = InvertSign(b_mnt_sign);
       string a_mnt_supp = floatToSupp(a_mnt_sign);
       string ngtv_b_mnt_supp = floatToSupp(ngtv_b_mnt_sign);
-      
+
       Console.WriteLine($"\nA - B = A_дод + (-B)_дод:\nA мантиса (додатковий код): {a_mnt_supp} = {doubleDecimalSupp(a_mnt_supp)}");
       Console.WriteLine($"від'ємна B мантиса (прямий код): {ngtv_b_mnt_sign} = {(ngtv_b_mnt_sign[0] == '1' ? "-" : "")}{doubleDecimalSigned(ngtv_b_mnt_sign)}");
       Console.WriteLine($"від'ємна B мантиса (додатковий код): {ngtv_b_mnt_supp}  = {doubleDecimalSupp(ngtv_b_mnt_supp)}");
@@ -65,15 +78,12 @@ namespace lab4_x {
       Console.WriteLine($"\nC = {res}{a_ord_sign}");
       int leadingZeros = 0;
       for (int i = 1; i < res.Length - 1 && res[i] == '0'; i++)
-          leadingZeros++;
+        leadingZeros++;
 
       int exponent = intDecimalSigned(ord_sign) - leadingZeros;
-      string adjustedExponent = intToSupp(intToBinary(exponent));
-
-      string trimmedMantissa = res[..1] + res[(1 + leadingZeros)..];
-
-      Console.WriteLine($"\nC = {trimmedMantissa[0]}|{trimmedMantissa[1..]} {adjustedExponent[0]}|{adjustedExponent[1..]} (прямий код) = {doubleDecimalSupp(trimmedMantissa)}");
-      Console.WriteLine($"\nC = {trimmedMantissa}{adjustedExponent}");
+      adjustedExponent = intToSupp(intToBinary(exponent));
+      trimmedMantissa = res[..1] + res[(1 + leadingZeros)..];
+      return new($"\nC = {trimmedMantissa}{adjustedExponent}");
     }
   }
 }
