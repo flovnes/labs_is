@@ -2,16 +2,21 @@ using System.Text;
 namespace lab4_x {
   public static partial class Lab4 {
     private static readonly char[] separator = [' ', '*', '^'];
-
     static void Main() {
-      Console.OutputEncoding = UTF8Encoding.UTF8; 
+      Console.OutputEncoding = Encoding.UTF8; 
+      
       Console.Write("\n1. Введіть дріб з плаваючою крапкою (наприклад, -0.101 * 2^101):  ");
-      string input = Console.ReadLine();
-      ParseInput(input, out string a_mnt_sign, out string a_ord_sign);
-
+      string input1 = Console.ReadLine();
       Console.Write("\n2. Введіть дріб з плаваючою крапкою (наприклад, -0.101 * 2^101):  ");
-      input = Console.ReadLine();
-      ParseInput(input, out string b_mnt_sign, out string b_ord_sign);
+      string input2 = Console.ReadLine();
+      
+      Console.WriteLine(whatever(input1, input2));
+    }
+
+    static string whatever(string i1, string i2) {
+      ParseInput(i1, out string a_mnt_sign, out string a_ord_sign);
+      ParseInput(i2, out string b_mnt_sign, out string b_ord_sign);
+      
 
       Console.WriteLine($"\nA мантиса (двійкова): {a_mnt_sign} = {bitToSign(a_mnt_sign)}{doubleDecimalSigned(a_mnt_sign)}");
       Console.WriteLine($"A період (двійкова): {a_ord_sign} = {bitToSign(a_ord_sign)}{intDecimalSigned(a_ord_sign)}");
@@ -73,7 +78,7 @@ namespace lab4_x {
       string trimmedMantissa = res[..1] + res[(1 + leadingZeros)..];
 
       Console.WriteLine($"\nC = {trimmedMantissa[0]}|{trimmedMantissa[1..]} {adjustedExponent[0]}|{adjustedExponent[1..]} (прямий код) = {doubleDecimalSupp(trimmedMantissa)}");
-      Console.WriteLine($"\nC = {trimmedMantissa}{adjustedExponent}");
+      return new($"\nC = {trimmedMantissa}{adjustedExponent}");
     }
   }
 }
