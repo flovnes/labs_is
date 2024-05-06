@@ -1,5 +1,5 @@
 using System.Text;
-namespace lab4_x {
+namespace lab4 {
   public static partial class Lab4 {
     public static void ParseInput(string i, out string m_str, out string o_str) {
       string[] parts = i.Split(separator, StringSplitOptions.RemoveEmptyEntries);

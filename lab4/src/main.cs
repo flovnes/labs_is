@@ -1,5 +1,5 @@
 using System.Text;
-namespace lab4_x {
+namespace lab4 {
   public static partial class Lab4 {
     private static readonly char[] separator = [' ', '*', '^'];
     static void Main() {
@@ -13,7 +13,7 @@ namespace lab4_x {
       Console.WriteLine(whatever(input1, input2));
     }
 
-    static string whatever(string i1, string i2) {
+    public static string whatever(string i1, string i2) {
       ParseInput(i1, out string a_mnt_sign, out string a_ord_sign);
       ParseInput(i2, out string b_mnt_sign, out string b_ord_sign);
       
